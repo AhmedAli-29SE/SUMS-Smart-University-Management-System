@@ -59,7 +59,7 @@ smart_university/
 ### 2. Clone & Setup
 
 ```bash
-git clone <repo>
+git clone <https://github.com/AhmedAli-29SE/SUMS-Smart-University-Management-System.git>
 cd smart_university
 
 # Create virtual environment
@@ -80,12 +80,12 @@ cp .env.example .env
 **.env example:**
 ```
 DEBUG=True
-SECRET_KEY=your-very-secret-key-change-this
+SECRET_KEY=django-insecure-sums-change-this-key-in-production-2024
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 DB_NAME=smart_university_db
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=postgres
 DB_HOST=localhost
 DB_PORT=5432
 ```
@@ -230,8 +230,8 @@ python manage.py test tests --verbosity=2
 
 ```bash
 DEBUG=False
-SECRET_KEY=<strong-random-key>
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+SECRET_KEY=<django-insecure-sums-change-this-key-in-production-2024>
+ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
 ### Static Files
@@ -253,7 +253,7 @@ gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4
 ```nginx
 server {
     listen 80;
-    server_name yourdomain.com;
+    server_name localhost,127.0.0.1;
 
     location / {
         proxy_pass http://127.0.0.1:8000;
