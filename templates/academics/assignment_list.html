@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Course Assignments{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>Course Assignments</h1><p>Teacher-course assignments</p></div>
+  {% if user.is_admin %}<a href="{% url 'academics:assignment_create' %}" class="ubtn ubtn-primary">+ Assign Course</a>{% endif %}
+</div>
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Course</th><th>Teacher</th><th>Semester</th><th>Year</th><th>Students</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for a in assignments %}
+      <tr>
+        <td><div class="td-bold">{{ a.course.name }}</div><div style="font-size:.75rem;color:var(--muted);">{{ a.course.code }}</div></td>
+        <td>{{ a.teacher.user.get_full_name }}</td>
+        <td><span class="ubadge ub-blue">{{ a.semester }}</span></td>
+        <td>{{ a.year }}</td>
+        <td><span class="ubadge ub-green">{{ a.enrollments.count }}</span></td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          <a href="{% url 'academics:assignment_detail' a.pk %}" class="ubtn ubtn-outline ubtn-xs">View</a>
+          {% if user.is_admin %}<a href="{% url 'academics:assignment_update' a.pk %}" class="ubtn ubtn-outline ubtn-xs">Edit</a>{% endif %}
+          {% if user.is_teacher or user.is_admin %}<a href="{% url 'attendance:mark' a.pk %}" class="ubtn ubtn-outline ubtn-xs">Attendance</a>{% endif %}
+          {% if user.is_teacher or user.is_admin %}<a href="{% url 'results:course_results' a.pk %}" class="ubtn ubtn-outline ubtn-xs">Results</a>{% endif %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted);">No assignments found.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

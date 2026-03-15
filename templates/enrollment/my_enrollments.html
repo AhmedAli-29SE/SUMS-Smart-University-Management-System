@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}My Courses{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>My Enrolled Courses</h1><p>Your current semester courses</p></div>
+  <a href="{% url 'enrollment:enroll' %}" class="ubtn ubtn-primary">+ Enroll in Course</a>
+</div>
+{% if enrollments %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+{% for enr in enrollments %}
+<div class="u-card">
+  <div class="u-card-head">
+    <h5>{{ enr.course_assignment.course.name }}</h5>
+    <span class="ubadge ub-gold">{{ enr.course_assignment.course.credit_hours }} cr</span>
+  </div>
+  <div class="u-card-body">
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:8px;">{{ enr.course_assignment.course.code }}</div>
+    <div style="font-size:.83rem;margin-bottom:4px;"><strong>Teacher:</strong> {{ enr.course_assignment.teacher.user.get_full_name }}</div>
+    <div style="font-size:.83rem;margin-bottom:12px;"><strong>Department:</strong> {{ enr.course_assignment.course.department.name }}</div>
+    {% with pct=enr.get_attendance_percentage %}
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-bottom:5px;">
+        <span>Attendance</span>
+        <span style="{% if pct >= 75 %}color:#16a34a;{% elif pct >= 60 %}color:#d97706;{% else %}color:#dc2626;{% endif %}">{{ pct|floatformat:0 }}%</span>
+      </div>
+      <div class="u-prog"><div class="u-prog-bar {% if pct >= 75 %}upb-good{% elif pct >= 60 %}upb-warn{% else %}upb-bad{% endif %}" style="width:{{ pct }}%;"></div></div>
+    </div>
+    {% endwith %}
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+      <a href="{% url 'attendance:course_detail' enr.pk %}" class="ubtn ubtn-outline ubtn-sm">Attendance</a>
+      <form method="post" action="{% url 'enrollment:drop' enr.pk %}" style="margin:0;" onsubmit="return confirm('Drop {{ enr.course_assignment.course.name }}?');">
+        {% csrf_token %}<button type="submit" class="ubtn ubtn-danger ubtn-sm">Drop</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div class="u-card"><div class="u-card-body" style="padding:60px;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:16px;">📚</div>
+  <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">No courses enrolled yet</div>
+  <div style="color:var(--muted);margin-bottom:20px;">Enroll in your first course to start your academic journey.</div>
+  <a href="{% url 'enrollment:enroll' %}" class="ubtn ubtn-gold">Browse & Enroll →</a>
+</div></div>
+{% endif %}
+{% endblock %}

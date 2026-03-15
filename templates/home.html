@@ -1,0 +1,1011 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* HERO */
+    .hero {
+        min-height: 92vh;
+        background: var(--navy);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 70% 60% at 75% 40%, rgba(201, 168, 76, 0.13) 0%, transparent 60%), radial-gradient(ellipse 40% 70% at 10% 80%, rgba(17, 34, 64, 0.7) 0%, transparent 60%);
+    }
+
+    .hero-grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.035;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+        background-size: 56px 56px;
+    }
+
+    .hero-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(201, 168, 76, 0.12);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 60px 40px;
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 72px;
+        align-items: center;
+        width: 100%;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(201, 168, 76, 0.15);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        color: var(--gold);
+        padding: 7px 15px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.6rem, 5vw, 4rem);
+        line-height: 1.1;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .hero h1 em {
+        color: var(--gold);
+        font-style: italic;
+    }
+
+    .hero-desc {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 36px;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-hero-gold {
+        background: linear-gradient(135deg, var(--gold), var(--gold2));
+        color: var(--navy);
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+    }
+
+    .btn-hero-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(201, 168, 76, 0.4);
+        color: var(--navy);
+    }
+
+    .btn-hero-outline {
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        color: white;
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .btn-hero-outline:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+
+    .hero-visual {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .hcard {
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 16px;
+        padding: 22px;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s;
+    }
+
+    .hcard:hover {
+        transform: translateY(-4px);
+    }
+
+    .hcard:nth-child(1) {
+        margin-top: 36px;
+    }
+
+    .hcard:nth-child(3) {
+        margin-top: -18px;
+    }
+
+    .hcard .hnum {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.9rem;
+        color: var(--gold);
+        font-weight: 900;
+    }
+
+    .hcard h4 {
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+        margin-top: 4px;
+    }
+
+    .hcard p {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.77rem;
+        margin: 0;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+        background: var(--gold);
+        padding: 28px 40px;
+    }
+
+    .stats-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-it {
+        text-align: center;
+        padding: 0 16px;
+        border-right: 1px solid rgba(10, 22, 40, 0.18);
+    }
+
+    .stat-it:last-child {
+        border-right: none;
+    }
+
+    .stat-it .sn {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--navy);
+        line-height: 1;
+    }
+
+    .stat-it .sl {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--navy);
+        opacity: 0.6;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-top: 3px;
+    }
+
+    /* SECTIONS */
+    .sec {
+        padding: 88px 40px;
+    }
+
+    .sec-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .sec-tag {
+        display: inline-block;
+        color: var(--gold);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .sec-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 14px;
+    }
+
+    .sec-sub {
+        font-size: 1rem;
+        color: var(--muted);
+        max-width: 520px;
+        line-height: 1.75;
+    }
+
+    /* FEATURES */
+    .features {
+        background: var(--bg);
+    }
+
+    .feat-hdr {
+        text-align: center;
+        margin-bottom: 56px;
+    }
+
+    .feat-hdr .sec-sub {
+        margin: 0 auto;
+    }
+
+    .feat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .fcard {
+        background: white;
+        border-radius: 18px;
+        padding: 30px 28px;
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fcard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--gold), var(--gold2));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s;
+    }
+
+    .fcard:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .fcard:hover::before {
+        transform: scaleX(1);
+    }
+
+    .fcard-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+    }
+
+    .fcard h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .fcard p {
+        font-size: 0.845rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* DEPARTMENTS */
+    .departments {
+        background: var(--navy);
+    }
+
+    .departments .sec-title {
+        color: white;
+    }
+
+    .departments .sec-sub {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    .dept-hdr {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 48px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .dept-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .dcard {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .dcard:hover {
+        background: rgba(201, 168, 76, 0.12);
+        border-color: rgba(201, 168, 76, 0.3);
+        transform: translateY(-4px);
+    }
+
+    .dcard .di {
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .dcard h4 {
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .dcard p {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.77rem;
+        margin: 0;
+    }
+
+    .dcard .dtag {
+        display: inline-block;
+        margin-top: 10px;
+        background: rgba(201, 168, 76, 0.2);
+        color: var(--gold);
+        padding: 2px 9px;
+        border-radius: 50px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+    }
+
+    /* PORTAL CTA */
+    .portal-sec {
+        background: var(--bg);
+        padding: 88px 40px;
+    }
+
+    .portal-box {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, var(--navy), var(--navy2));
+        border-radius: 24px;
+        padding: 64px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 56px;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .portal-box::after {
+        content: '';
+        position: absolute;
+        right: -40px;
+        top: -40px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        border: 1px solid rgba(201, 168, 76, 0.12);
+    }
+
+    .portal-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.6rem, 3vw, 2.3rem);
+        color: white;
+        margin-bottom: 12px;
+    }
+
+    .portal-title em {
+        color: var(--gold);
+        font-style: italic;
+    }
+
+    .portal-sub {
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.7;
+        margin-bottom: 32px;
+        font-size: 0.95rem;
+    }
+
+    .portal-cards {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .pcard {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px 22px;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .pcard:hover {
+        background: rgba(201, 168, 76, 0.14);
+        border-color: rgba(201, 168, 76, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .pcard .pi {
+        font-size: 1.4rem;
+    }
+
+    .pcard strong {
+        display: block;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .pcard span {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.75rem;
+    }
+
+    .portal-login {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .portal-login a.main-btn {
+        display: block;
+        background: linear-gradient(135deg, var(--gold), var(--gold2));
+        color: var(--navy);
+        text-decoration: none;
+        padding: 16px 36px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        box-shadow: 0 6px 20px rgba(201, 168, 76, 0.3);
+        transition: all 0.3s;
+    }
+
+    .portal-login a.main-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 32px rgba(201, 168, 76, 0.5);
+        color: var(--navy);
+    }
+
+    .portal-login p {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 0.72rem;
+        margin-top: 10px;
+    }
+
+    .portal-login p a {
+        color: var(--gold);
+        font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+        background: var(--navy);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 52px 40px 28px;
+    }
+
+    .footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        margin-bottom: 28px;
+    }
+
+    .footer-brand p {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.845rem;
+        line-height: 1.7;
+        margin-top: 12px;
+    }
+
+    .footer-col h5 {
+        color: var(--gold);
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .footer-col a {
+        display: block;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        font-size: 0.845rem;
+        margin-bottom: 9px;
+        transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+        color: white;
+    }
+
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-bottom p {
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.78rem;
+        margin: 0;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(28px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .reveal {
+        opacity: 0;
+    }
+
+    .reveal.visible {
+        animation: fadeUp 0.65s ease forwards;
+    }
+
+    /* HOME PAGE — NO SIDEBAR, FULL WIDTH */
+    body.home-page .layout-portal {
+        display: none !important;
+    }
+
+    .home-wrap {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:1024px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .hero-visual {
+            display: none;
+        }
+
+        .feat-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dept-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .portal-box {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media(max-width:640px) {
+        .sec {
+            padding: 60px 20px;
+        }
+
+        .stats-bar {
+            padding: 24px 20px;
+        }
+
+        .stats-inner {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .feat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dept-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .portal-sec {
+            padding: 60px 20px;
+        }
+
+        .portal-box {
+            padding: 32px 24px;
+        }
+
+        .portal-cards {
+            flex-direction: column;
+        }
+
+        footer {
+            padding: 40px 20px 20px;
+        }
+
+        .footer-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-bottom {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hero-content {
+            padding: 40px 20px;
+        }
+
+        .stats-inner {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block page_layout %}
+<div class="home-wrap" style="padding-top:var(--navbar-h);width:100%;overflow-x:hidden;">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-ring" style="width:600px;height:600px;right:-120px;top:-120px;"></div>
+        <div class="hero-ring" style="width:380px;height:380px;right:40px;top:40px;"></div>
+        <div class="hero-content">
+            <div>
+                <div class="hero-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon
+                            points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                    </svg>
+                    Ranked #1 in Academic Excellence 2024
+                </div>
+                <h1>Shaping the <em>Future</em><br>of Education</h1>
+                <p class="hero-desc"
+                    style="color:rgba(255,255,255,0.9); font-weight:400; text-shadow:0 1px 2px rgba(0,0,0,0.5);">A
+                    world-class institution committed to academic excellence, innovation, and producing tomorrow's
+                    leaders. Join thousands of students transforming their futures.</p>
+                <div class="hero-btns">
+                    <a href="{% url 'accounts:signup' %}" class="btn-hero-gold">
+                        Get Started Free
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12,5 19,12 12,19" />
+                        </svg>
+                    </a>
+                    <a href="#features" class="btn-hero-outline">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polygon points="10,8 16,12 10,16" />
+                        </svg>
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hcard">
+                    <div class="hnum">120+</div>
+                    <h4>Programs</h4>
+                    <p>UG &amp; Graduate</p>
+                </div>
+                <div class="hcard">
+                    <div class="hnum">98%</div>
+                    <h4>Placement Rate</h4>
+                    <p>Industry-ready grads</p>
+                </div>
+                <div class="hcard">
+                    <div class="hnum">350+</div>
+                    <h4>Expert Faculty</h4>
+                    <p>PhD holders</p>
+                </div>
+                <div class="hcard">
+                    <div class="hnum">60+</div>
+                    <h4>Countries</h4>
+                    <p>Global community</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stats-inner">
+            <div class="stat-it">
+                <div class="sn">25,000+</div>
+                <div class="sl">Enrolled Students</div>
+            </div>
+            <div class="stat-it">
+                <div class="sn">1,200+</div>
+                <div class="sl">Academic Staff</div>
+            </div>
+            <div class="stat-it">
+                <div class="sn">50 Years</div>
+                <div class="sl">of Excellence</div>
+            </div>
+            <div class="stat-it">
+                <div class="sn">150,000+</div>
+                <div class="sl">Alumni Worldwide</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="sec features" id="features">
+        <div class="sec-inner">
+            <div class="feat-hdr">
+                <div class="sec-tag">Our Portal</div>
+                <h2 class="sec-title">Everything in One Place</h2>
+                <p class="sec-sub">Integrated management portal for students, teachers and administrators — seamless,
+                    modern, and fast.</p>
+            </div>
+            <div class="feat-grid">
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#fff5e6;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#c9a84c" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <polyline points="16,11 18,13 22,9" />
+                        </svg></div>
+                    <h3>Smart Enrollment</h3>
+                    <p>Browse and enroll in courses with real-time availability and eligibility checks.</p>
+                </div>
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#e6f7ff;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#2563eb" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22,4 12,14.01 9,11.01" />
+                        </svg></div>
+                    <h3>Attendance Tracking</h3>
+                    <p>Teachers mark attendance digitally. Instant alerts when attendance drops below 75%.</p>
+                </div>
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#f0fff4;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#16a34a" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg></div>
+                    <h3>Results &amp; GPA</h3>
+                    <p>Auto-computed grades from midterm, final, and assignment marks. CGPA weighted by credit hours.
+                    </p>
+                </div>
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#fff0f6;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#db2777" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14,2 14,8 20,8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                        </svg></div>
+                    <h3>Academic Transcript</h3>
+                    <p>Generate and print official transcripts with full academic history and cumulative GPA.</p>
+                </div>
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#f9f0ff;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#7c3aed" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></div>
+                    <h3>Role-Based Access</h3>
+                    <p>Separate dashboards for Admins, Teachers, and Students — tailored views and permissions.</p>
+                </div>
+                <div class="fcard reveal">
+                    <div class="fcard-icon" style="background:#e6fffb;"><svg width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="#0d9488" stroke-width="2">
+                            <path
+                                d="M3 21h18M3 7v1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7m0 1a3 3 0 0 0 6 0V7H3l2-4h14l2 4" />
+                            <path d="M5 21V11m4 10V11m4 10V11m4 10V11" />
+                        </svg></div>
+                    <h3>Department Management</h3>
+                    <p>Admins manage departments, assign courses, onboard staff, and oversee the full university
+                        structure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPARTMENTS -->
+    <section class="sec departments" id="departments">
+        <div class="sec-inner">
+            <div class="dept-hdr">
+                <div>
+                    <div class="sec-tag">Academics</div>
+                    <h2 class="sec-title">Our Departments</h2>
+                    <p class="sec-sub">Explore cutting-edge programs across science, technology, and the humanities.</p>
+                </div>
+                <a href="{% url 'accounts:signup' %}" class="btn-hero-gold">Explore All →</a>
+            </div>
+            <div class="dept-grid">
+                <div class="dcard reveal"><span class="di">💻</span>
+                    <h4>Computer Science</h4>
+                    <p>AI, Software, Cyber</p><span class="dtag">CS</span>
+                </div>
+                <div class="dcard reveal"><span class="di">⚡</span>
+                    <h4>Electrical Eng.</h4>
+                    <p>Power, Robotics, IoT</p><span class="dtag">EE</span>
+                </div>
+                <div class="dcard reveal"><span class="di">📐</span>
+                    <h4>Mathematics</h4>
+                    <p>Pure, Applied, Stats</p><span class="dtag">MTH</span>
+                </div>
+                <div class="dcard reveal"><span class="di">🔬</span>
+                    <h4>Physics</h4>
+                    <p>Quantum, Astrophysics</p><span class="dtag">PHY</span>
+                </div>
+                <div class="dcard reveal"><span class="di">💼</span>
+                    <h4>Business Admin</h4>
+                    <p>Finance, Marketing</p><span class="dtag">BBA</span>
+                </div>
+                <div class="dcard reveal"><span class="di">⚗️</span>
+                    <h4>Chemistry</h4>
+                    <p>Organic, Biochemistry</p><span class="dtag">CHM</span>
+                </div>
+                <div class="dcard reveal"><span class="di">📖</span>
+                    <h4>English Literature</h4>
+                    <p>Linguistics, Writing</p><span class="dtag">ENG</span>
+                </div>
+                <div class="dcard reveal"><span class="di">🏗️</span>
+                    <h4>Civil Engineering</h4>
+                    <p>Structural, Env., Geo</p><span class="dtag">CE</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTAL CTA -->
+    <section class="portal-sec" id="portal">
+        <div class="portal-box">
+            <div>
+                <div class="sec-tag">Student &amp; Staff Portal</div>
+                <h2 class="portal-title">Access Your <em>Academic</em><br>Portal Today</h2>
+                <p class="portal-sub">Whether you're a student checking grades, a teacher marking attendance, or an
+                    admin managing the university — sign in or create an account.</p>
+                <div class="portal-cards">
+                    <a href="{% url 'accounts:signup' %}" class="pcard"><span class="pi">🎓</span>
+                        <div><strong>Student Portal</strong><span>Enroll, grades &amp; GPA</span></div>
+                    </a>
+                    <a href="{% url 'accounts:signup' %}" class="pcard"><span class="pi">👨‍🏫</span>
+                        <div><strong>Teacher Portal</strong><span>Attendance &amp; marks</span></div>
+                    </a>
+                    <a href="{% url 'accounts:signup' %}" class="pcard"><span class="pi">⚙️</span>
+                        <div><strong>Admin Portal</strong><span>Manage everything</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="portal-login">
+                <a href="{% url 'accounts:login' %}" class="main-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="margin-right:6px;">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10,17 15,12 10,7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
+                    Sign In to Portal
+                </a>
+                <p>Or <a href="{% url 'accounts:signup' %}">create a free account →</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="{% url 'accounts:home' %}"
+                        style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+                        <div
+                            style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a1628"
+                                stroke-width="2.2" stroke-linecap="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                <path d="M2 17l10 5 10-5" />
+                                <path d="M2 12l10 5 10-5" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span
+                                style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:white;display:block;line-height:1.1;">Smart
+                                University</span>
+                            <span
+                                style="font-size:0.55rem;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;">Management
+                                System</span>
+                        </div>
+                    </a>
+                    <p>Committed to excellence in education, research, and innovation since 1974. Shaping the leaders of
+                        tomorrow.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Academics</h5><a href="#departments">Departments</a><a href="#departments">Programs</a><a
+                        href="#features">Research</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Portal</h5><a href="{% url 'accounts:login' %}">Sign In</a><a
+                        href="{% url 'accounts:signup' %}">Create Account</a><a
+                        href="{% url 'accounts:dashboard' %}">Dashboard</a>
+                </div>
+                <div class="footer-col">
+                    <h5>Contact</h5><a href="#">University Road, City</a><a href="#">info@smartuniversity.edu</a><a
+                        href="#">+92 300 4246654</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Smart University. All rights reserved.</p>
+                <p>Built with Django · PostgreSQL</p>
+            </div>
+        </div>
+    </footer>
+
+</div><!-- end home-wrap -->
+
+<script>
+    const ro = new IntersectionObserver((e) => { e.forEach(el => { if (el.isIntersecting) { el.target.classList.add('visible'); ro.unobserve(el.target); } }); }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
+{% endblock page_layout %}

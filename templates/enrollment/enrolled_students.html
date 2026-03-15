@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Enrolled Students{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ assignment.course.name }}</h1><p>{{ enrollments|length }} students enrolled — {{ assignment.semester }} {{ assignment.year }}</p></div>
+  <div style="display:flex;gap:8px;">
+    <a href="{% url 'attendance:mark' assignment.pk %}" class="ubtn ubtn-primary">Mark Attendance</a>
+    <a href="{% url 'results:course_results' assignment.pk %}" class="ubtn ubtn-outline">Enter Results</a>
+    <a href="{% url 'academics:assignment_detail' assignment.pk %}" class="ubtn ubtn-outline">← Back</a>
+  </div>
+</div>
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>#</th><th>Student</th><th>Reg. Number</th><th>Department</th><th>Semester</th><th>Attendance</th></tr></thead>
+      <tbody>
+      {% for enr in enrollments %}
+      <tr>
+        <td style="color:var(--muted);">{{ forloop.counter }}</td>
+        <td class="td-bold">{{ enr.student.user.get_full_name }}</td>
+        <td><span class="ubadge ub-gray">{{ enr.student.registration_number }}</span></td>
+        <td>{{ enr.student.department.name|default:"—" }}</td>
+        <td>{{ enr.student.semester }}</td>
+        <td>
+          {% with pct=enr.get_attendance_percentage %}
+          <div style="display:flex;align-items:center;gap:8px;min-width:100px;">
+            <div class="u-prog" style="flex:1;"><div class="u-prog-bar {% if pct >= 75 %}upb-good{% elif pct >= 60 %}upb-warn{% else %}upb-bad{% endif %}" style="width:{{ pct }}%;"></div></div>
+            <span style="font-size:.75rem;font-weight:700;">{{ pct|floatformat:0 }}%</span>
+          </div>
+          {% endwith %}
+        </td>
+      </tr>
+      {% empty %}<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted);">No students enrolled.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

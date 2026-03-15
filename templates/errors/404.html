@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Error 404{% endblock %}
+{% block page_layout %}
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding-top:var(--navbar-h);background:var(--bg);">
+  <div style="text-align:center;max-width:480px;padding:40px;">
+    <div style="font-family:'Playfair Display',serif;font-size:6rem;font-weight:900;color:var(--border);line-height:1;">404</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:10px;">
+      {% if "404" == "403" %}Access Denied{% elif "404" == "404" %}Page Not Found{% else %}Server Error{% endif %}
+    </div>
+    <div style="color:var(--muted);margin-bottom:28px;">
+      {% if "404" == "403" %}You don't have permission to view this page.
+      {% elif "404" == "404" %}The page you're looking for doesn't exist.
+      {% else %}Something went wrong on our end. Please try again.{% endif %}
+    </div>
+    <a href="/" class="ubtn ubtn-primary">← Go Home</a>
+  </div>
+</div>
+{% endblock page_layout %}

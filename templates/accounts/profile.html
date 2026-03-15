@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="page-hdr"><h1>My Profile</h1><p>Your account information</p></div>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;align-items:start;">
+  <div class="u-card">
+    <div class="u-card-body" style="text-align:center;padding:32px 20px;">
+      <div style="width:80px;height:80px;border-radius:18px;background:linear-gradient(135deg,var(--navy),var(--navy3));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem;font-weight:800;color:#fff;font-family:'Playfair Display',serif;">
+        {{ target_user.first_name|first|upper }}{{ target_user.last_name|first|upper }}
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:4px;">{{ target_user.get_full_name }}</div>
+      <div style="color:var(--muted);font-size:.85rem;margin-bottom:14px;">{{ target_user.email }}</div>
+      {% if target_user.is_admin %}<span class="ubadge ub-red">Administrator</span>
+      {% elif target_user.is_teacher %}<span class="ubadge ub-blue">Teacher</span>
+      {% else %}<span class="ubadge ub-green">Student</span>{% endif %}
+      <div style="margin-top:20px;display:grid;gap:8px;">
+        <a href="{% url 'accounts:change_password' %}" class="ubtn ubtn-outline" style="justify-content:center;">Change Password</a>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <div class="u-card">
+      <div class="u-card-head"><h5>Account Details</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div><div class="u-label">First Name</div><div style="font-weight:600;">{{ target_user.first_name }}</div></div>
+          <div><div class="u-label">Last Name</div><div style="font-weight:600;">{{ target_user.last_name }}</div></div>
+          <div><div class="u-label">Email</div><div style="font-weight:600;">{{ target_user.email }}</div></div>
+          <div><div class="u-label">Role</div><div style="font-weight:600;">{{ target_user.get_role_display }}</div></div>
+          <div><div class="u-label">Member Since</div><div style="font-weight:600;">{{ target_user.created_at|date:"F d, Y" }}</div></div>
+          <div><div class="u-label">Status</div><div>{% if target_user.is_active %}<span class="ubadge ub-green">Active</span>{% else %}<span class="ubadge ub-gray">Inactive</span>{% endif %}</div></div>
+        </div>
+      </div>
+    </div>
+    {% if target_user.is_student %}{% with p=target_user.student_profile %}{% if p %}
+    <div class="u-card">
+      <div class="u-card-head"><h5>Student Details</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div><div class="u-label">Registration No.</div><div style="font-weight:600;">{{ p.registration_number }}</div></div>
+          <div><div class="u-label">Department</div><div style="font-weight:600;">{{ p.department.name|default:"Not assigned" }}</div></div>
+          <div><div class="u-label">Semester</div><div style="font-weight:600;">{{ p.semester }}</div></div>
+          <div><div class="u-label">Session</div><div style="font-weight:600;">{{ p.session }}</div></div>
+          {% if p.phone %}<div><div class="u-label">Phone</div><div style="font-weight:600;">{{ p.phone }}</div></div>{% endif %}
+          {% if p.date_of_birth %}<div><div class="u-label">Date of Birth</div><div style="font-weight:600;">{{ p.date_of_birth|date:"M d, Y" }}</div></div>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}{% endwith %}{% endif %}
+    {% if target_user.is_teacher %}{% with p=target_user.teacher_profile %}{% if p %}
+    <div class="u-card">
+      <div class="u-card-head"><h5>Teacher Details</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div><div class="u-label">Employee ID</div><div style="font-weight:600;">{{ p.employee_id }}</div></div>
+          <div><div class="u-label">Designation</div><div style="font-weight:600;">{{ p.get_designation_display }}</div></div>
+          <div><div class="u-label">Department</div><div style="font-weight:600;">{{ p.department.name|default:"Not assigned" }}</div></div>
+          {% if p.qualification %}<div><div class="u-label">Qualification</div><div style="font-weight:600;">{{ p.qualification }}</div></div>{% endif %}
+          {% if p.phone %}<div><div class="u-label">Phone</div><div style="font-weight:600;">{{ p.phone }}</div></div>{% endif %}
+          {% if p.joining_date %}<div><div class="u-label">Joining Date</div><div style="font-weight:600;">{{ p.joining_date|date:"M d, Y" }}</div></div>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}{% endwith %}{% endif %}
+  </div>
+</div>
+{% endblock %}

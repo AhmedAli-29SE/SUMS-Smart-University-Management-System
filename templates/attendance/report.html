@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>Attendance Report</h1><p>{{ assignment.course.name }} — {{ assignment.semester }} {{ assignment.year }}</p></div>
+  <div style="display:flex;gap:8px;">
+    <a href="{% url 'attendance:mark' assignment.pk %}" class="ubtn ubtn-primary">Mark Attendance</a>
+    <a href="{% url 'attendance:mark_select' %}" class="ubtn ubtn-outline">← Back</a>
+  </div>
+</div>
+<div class="u-card" style="overflow-x:auto;">
+  <table class="u-tbl" style="min-width:600px;">
+    <thead>
+      <tr>
+        <th>Student</th>
+        {% for d in dates %}<th style="font-size:.68rem;">{{ d|date:"M d" }}</th>{% endfor %}
+        <th>%</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for row in report %}
+    <tr {% if row.percentage < 75 %}style="background:#fff9f9;"{% endif %}>
+      <td class="td-bold">{{ row.student.user.get_full_name }}<div style="font-size:.72rem;color:var(--muted);">{{ row.student.registration_number }}</div></td>
+      {% for rec in row.records %}
+      <td style="text-align:center;">
+        {% if rec %}
+          {% if rec.status == 'P' %}<span style="color:#16a34a;font-weight:700;">P</span>
+          {% elif rec.status == 'A' %}<span style="color:#dc2626;font-weight:700;">A</span>
+          {% elif rec.status == 'L' %}<span style="color:#d97706;font-weight:700;">L</span>
+          {% else %}<span style="color:#7c3aed;font-weight:700;">E</span>{% endif %}
+        {% else %}<span style="color:var(--border);">—</span>{% endif %}
+      </td>
+      {% endfor %}
+      <td><span style="font-weight:700;{% if row.percentage >= 75 %}color:#16a34a;{% elif row.percentage >= 60 %}color:#d97706;{% else %}color:#dc2626;{% endif %}">{{ row.percentage|floatformat:0 }}%</span></td>
+    </tr>
+    {% empty %}<tr><td colspan="99" style="padding:32px;text-align:center;color:var(--muted);">No data.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

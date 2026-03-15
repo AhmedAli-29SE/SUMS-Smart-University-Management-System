@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Mark Attendance{% endblock %}
+{% block content %}
+<div class="page-hdr"><h1>Mark Attendance</h1><p>Select a course and date to mark attendance</p></div>
+<div style="max-width:600px;">
+<div class="u-card"><div class="u-card-head"><h5>Select Course</h5></div>
+<div class="u-card-body">
+  {% if assignments %}
+  {% for a in assignments %}
+  <div style="border:1.5px solid var(--border);border-radius:var(--rsm);padding:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+    <div>
+      <div style="font-weight:600;">{{ a.course.name }}</div>
+      <div style="font-size:.78rem;color:var(--muted);">{{ a.course.code }} — {{ a.enrollments.count }} students enrolled</div>
+    </div>
+    <div style="display:flex;gap:7px;flex-shrink:0;">
+      <a href="{% url 'attendance:mark' a.pk %}" class="ubtn ubtn-primary ubtn-sm">Mark Today</a>
+      <a href="{% url 'attendance:report' a.pk %}" class="ubtn ubtn-outline ubtn-sm">Report</a>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div style="padding:32px;text-align:center;"><div style="font-size:2.5rem;margin-bottom:12px;">📋</div><div style="color:var(--muted);">No active courses assigned to you.</div></div>
+  {% endif %}
+</div></div></div>
+{% endblock %}

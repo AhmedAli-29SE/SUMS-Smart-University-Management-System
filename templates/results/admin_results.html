@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}All Results{% endblock %}
+{% block content %}
+<div class="page-hdr"><h1>Results Overview</h1><p>All student results across courses</p></div>
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Student</th><th>Course</th><th>Teacher</th><th>Total</th><th>Grade</th><th>GPA Pts</th><th>Updated</th></tr></thead>
+      <tbody>
+      {% for r in results %}
+      <tr>
+        <td class="td-bold">{{ r.enrollment.student.user.get_full_name }}<div style="font-size:.73rem;color:var(--muted);">{{ r.enrollment.student.registration_number }}</div></td>
+        <td>{{ r.enrollment.course_assignment.course.name }}</td>
+        <td>{{ r.enrollment.course_assignment.teacher.user.get_full_name }}</td>
+        <td><strong>{{ r.total|default:"—" }}</strong></td>
+        <td>{% if r.grade %}<span class="ubadge {% if r.grade == 'A+' or r.grade == 'A' %}ub-green{% elif r.grade == 'F' %}ub-red{% else %}ub-blue{% endif %}">{{ r.grade }}</span>{% else %}<span style="color:var(--muted);">—</span>{% endif %}</td>
+        <td>{{ r.gpa_points|default:"—" }}</td>
+        <td style="color:var(--muted);font-size:.8rem;">{{ r.updated_at|date:"M d, Y" }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--muted);">No results entered yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

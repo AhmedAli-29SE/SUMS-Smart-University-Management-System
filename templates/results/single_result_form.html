@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Enter Result{% endblock %}
+{% block content %}
+<div class="ph-row"><div class="page-hdr"><h1>Enter Result</h1><p>{{ enrollment.student.user.get_full_name }} — {{ enrollment.course_assignment.course.name }}</p></div><a href="{% url 'results:course_results' enrollment.course_assignment.pk %}" class="ubtn ubtn-outline">← Back</a></div>
+<div style="max-width:480px;">
+<div class="u-card"><div class="u-card-head"><h5>Marks Entry</h5></div>
+<div class="u-card-body"><form method="post">{% csrf_token %}
+{% for field in form %}<div class="u-fg"><label class="u-label">{{ field.label }}</label>{{ field }}{% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}</div>{% endfor %}
+<div style="display:flex;gap:10px;"><button type="submit" class="ubtn ubtn-primary">Save Result</button><a href="{% url 'results:course_results' enrollment.course_assignment.pk %}" class="ubtn ubtn-outline">Cancel</a></div>
+</form></div></div></div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Enter Results{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ assignment.course.name }}</h1><p>Enter marks for {{ assignment.semester }} {{ assignment.year }}</p></div>
+  <a href="{% url 'results:enter' %}" class="ubtn ubtn-outline">← Back</a>
+</div>
+<form method="post">{% csrf_token %}
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Student</th><th>Midterm (30)</th><th>Final (50)</th><th>Grade</th><th>Action</th></tr></thead>
+      <tbody>
+      {% for item in result_data %}
+      <tr>
+        <td class="td-bold">{{ item.enrollment.student.user.get_full_name }}<div style="font-size:.75rem;color:var(--muted);">{{ item.enrollment.student.registration_number }}</div></td>
+        <td>
+          {% for field in item.form %}{% if field.name == 'midterm_marks' %}
+          <input type="number" name="{{ field.html_name }}" value="{{ field.value|default:'' }}" min="0" max="50" class="u-input" style="width:80px;" placeholder="0-50">
+          {% endif %}{% endfor %}
+        </td>
+        <td>
+          {% for field in item.form %}{% if field.name == 'final_marks' %}
+          <input type="number" name="{{ field.html_name }}" value="{{ field.value|default:'' }}" min="0" max="50" class="u-input" style="width:80px;" placeholder="0-50">
+          {% endif %}{% endfor %}
+        </td>
+        <td>{% if item.result and item.result.letter_grade %}<span class="ubadge {% if item.result.letter_grade == 'A+' or item.result.letter_grade == 'A' %}ub-green{% elif item.result.letter_grade == 'F' %}ub-red{% else %}ub-blue{% endif %}">{{ item.result.letter_grade }}</span>{% else %}<span style="color:var(--muted);">—</span>{% endif %}</td>
+        <td><a href="{% url 'results:single_result' item.enrollment.pk %}" class="ubtn ubtn-outline ubtn-xs">Edit</a></td>
+      </tr>
+      {% empty %}<tr><td colspan="5" style="padding:32px;text-align:center;color:var(--muted);">No students enrolled.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="padding:16px;border-top:1px solid var(--border);">
+    <button type="submit" class="ubtn ubtn-primary">Save All Results</button>
+  </div>
+</div>
+</form>
+{% endblock %}

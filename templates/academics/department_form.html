@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Department{% endblock %}
+{% block content %}
+<div class="ph-row"><div class="page-hdr"><h1>{{ action }} Department</h1></div><a href="{% url 'academics:department_list' %}" class="ubtn ubtn-outline">← Back</a></div>
+<div style="max-width:580px;">
+<div class="u-card">
+  <div class="u-card-head"><h5>Department Info</h5></div>
+  <div class="u-card-body">
+    <form method="post">{% csrf_token %}
+      {% for field in form %}
+      <div class="u-fg"><label class="u-label">{{ field.label }}</label>{{ field }}{% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}</div>
+      {% endfor %}
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="ubtn ubtn-primary">{{ action }} Department</button>
+        <a href="{% url 'academics:department_list' %}" class="ubtn ubtn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}

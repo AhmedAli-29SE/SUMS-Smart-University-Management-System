@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ assignment.course.name }}{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ assignment.course.name }}</h1><p>{{ assignment.course.code }} — {{ assignment.semester }} {{ assignment.year }}</p></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'enrollment:enrolled_students' assignment.pk %}" class="ubtn ubtn-outline">Students ({{ assignment.enrollments.count }})</a>
+    {% if user.is_teacher or user.is_admin %}<a href="{% url 'attendance:mark' assignment.pk %}" class="ubtn ubtn-primary">Mark Attendance</a>{% endif %}
+    {% if user.is_teacher or user.is_admin %}<a href="{% url 'results:course_results' assignment.pk %}" class="ubtn ubtn-outline">Enter Results</a>{% endif %}
+    <a href="{% url 'academics:assignment_list' %}" class="ubtn ubtn-outline">← Back</a>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <div class="u-card">
+    <div class="u-card-head"><h5>Course Details</h5></div>
+    <div class="u-card-body">
+      <div class="u-fg"><div class="u-label">Course Name</div><div style="font-weight:600;">{{ assignment.course.name }}</div></div>
+      <div class="u-fg"><div class="u-label">Teacher</div><div style="font-weight:600;">{{ assignment.teacher.user.get_full_name }}</div></div>
+      <div class="u-fg"><div class="u-label">Department</div><div style="font-weight:600;">{{ assignment.course.department.name }}</div></div>
+      <div class="u-fg"><div class="u-label">Credits</div><span class="ubadge ub-gold">{{ assignment.course.credit_hours }} credits</span></div>
+    </div>
+  </div>
+  <div class="u-card">
+    <div class="u-card-head"><h5>🎓 Enrolled Students</h5></div>
+    <table class="u-tbl">
+      <thead><tr><th>Student</th><th>Reg. No.</th></tr></thead>
+      <tbody>
+      {% for enr in assignment.enrollments.all|slice:":8" %}
+      <tr><td class="td-bold">{{ enr.student.user.get_full_name }}</td><td style="color:var(--muted);">{{ enr.student.registration_number }}</td></tr>
+      {% empty %}<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">No students enrolled.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

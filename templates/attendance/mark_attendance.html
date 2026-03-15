@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Mark Attendance{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ assignment.course.name }}</h1><p>Mark attendance for {{ selected_date|date:"l, F d Y" }}</p></div>
+  <a href="{% url 'attendance:mark_select' %}" class="ubtn ubtn-outline">← Back</a>
+</div>
+<form method="post">{% csrf_token %}
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <div class="u-card" style="margin-bottom:16px;">
+    <div class="u-card-head">
+      <h5>📅 Select Date</h5>
+      <input type="date" value="{{ selected_date }}" onchange="this.form&&this.form.submit?window.location='?date='+this.value:''" style="border:1.5px solid var(--border);border-radius:var(--rsm);padding:6px 10px;font-family:'DM Sans',sans-serif;font-size:.85rem;">
+    </div>
+  </div>
+  <div class="u-card">
+    <div class="u-card-head">
+      <h5>Students ({{ enrollments|length }})</h5>
+      <div style="display:flex;gap:7px;">
+        <button type="button" onclick="setAll('P')" class="ubtn ubtn-outline ubtn-sm" style="color:#16a34a;border-color:#16a34a;">All Present</button>
+        <button type="button" onclick="setAll('A')" class="ubtn ubtn-outline ubtn-sm" style="color:#dc2626;border-color:#dc2626;">All Absent</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="u-tbl">
+        <thead><tr><th>#</th><th>Student</th><th>Status</th><th>Remarks</th></tr></thead>
+        <tbody>
+        {% for enr in enrollments %}
+        <tr>
+          <td style="color:var(--muted);">{{ forloop.counter }}</td>
+          <td class="td-bold">{{ enr.student.user.get_full_name }}<div style="font-size:.75rem;color:var(--muted);">{{ enr.student.registration_number }}</div></td>
+          <td>
+            <select name="status_{{ enr.pk }}" class="att-select u-input" style="width:auto;padding:6px 10px;">
+              <option value="P">Present</option>
+              <option value="A">Absent</option>
+              <option value="L">Late</option>
+              <option value="E">Excused</option>
+            </select>
+          </td>
+          <td><input type="text" name="remarks_{{ enr.pk }}" placeholder="Optional..." class="u-input" style="max-width:200px;"></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:16px;border-top:1px solid var(--border);display:flex;gap:10px;">
+      <button type="submit" class="ubtn ubtn-primary">Save Attendance</button>
+      <a href="{% url 'attendance:mark_select' %}" class="ubtn ubtn-outline">Cancel</a>
+    </div>
+  </div>
+</form>
+<script>function setAll(v){document.querySelectorAll('.att-select').forEach(s=>s.value=v);}</script>
+{% endblock %}

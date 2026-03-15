@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Courses{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>Courses</h1><p>All university courses</p></div>
+  {% if user.is_admin %}<a href="{% url 'academics:course_create' %}" class="ubtn ubtn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Course</a>{% endif %}
+</div>
+<div class="u-card">
+  <div class="u-card-head">
+    <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;flex:1;">
+      <input type="text" name="search" value="{{ search }}" placeholder="Search courses..." class="u-input" style="max-width:220px;">
+      <select name="department" class="u-input" style="max-width:200px;">
+        <option value="">All Departments</option>
+        {% for d in departments %}<option value="{{ d.pk }}" {% if selected_dept == d.pk|stringformat:"s" %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="ubtn ubtn-primary ubtn-sm">Filter</button>
+    </form>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Code</th><th>Course Name</th><th>Department</th><th>Credits</th><th>Status</th>{% if user.is_admin %}<th></th>{% endif %}</tr></thead>
+      <tbody>
+      {% for c in courses %}
+      <tr>
+        <td><span class="ubadge ub-gold">{{ c.code }}</span></td>
+        <td class="td-bold">{{ c.name }}</td>
+        <td>{{ c.department.name }}</td>
+        <td><span class="ubadge ub-blue">{{ c.credit_hours }} credits</span></td>
+        <td>{% if c.is_active %}<span class="ubadge ub-green">Active</span>{% else %}<span class="ubadge ub-gray">Inactive</span>{% endif %}</td>
+        {% if user.is_admin %}<td><a href="{% url 'academics:course_update' c.pk %}" class="ubtn ubtn-outline ubtn-xs">Edit</a></td>{% endif %}
+      </tr>
+      {% empty %}<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted);">No courses found.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

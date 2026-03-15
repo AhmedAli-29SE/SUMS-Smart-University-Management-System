@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Enroll in Course{% endblock %}
+{% block content %}
+<div class="ph-row"><div class="page-hdr"><h1>Enroll in a Course</h1><p>Choose a course to join this semester</p></div><a href="{% url 'enrollment:my_enrollments' %}" class="ubtn ubtn-outline">← My Courses</a></div>
+<div style="max-width:560px;">
+<div class="u-card"><div class="u-card-head"><h5>Select Course</h5></div>
+<div class="u-card-body"><form method="post">{% csrf_token %}
+{% for field in form %}<div class="u-fg"><label class="u-label">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div style="color:var(--muted);font-size:.77rem;margin-top:4px;">{{ field.help_text }}</div>{% endif %}{% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}</div>{% endfor %}
+<div style="display:flex;gap:10px;"><button type="submit" class="ubtn ubtn-primary">Enroll Now</button><a href="{% url 'enrollment:my_enrollments' %}" class="ubtn ubtn-outline">Cancel</a></div>
+</form></div></div></div>
+{% endblock %}

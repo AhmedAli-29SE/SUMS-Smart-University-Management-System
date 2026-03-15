@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Detail{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ enrollment.course_assignment.course.name }}</h1><p>Your attendance record for this course</p></div>
+  <a href="{% url 'attendance:my_attendance' %}" class="ubtn ubtn-outline">← Back</a>
+</div>
+<div class="u-alert {% if percentage >= 75 %}ua-success{% elif percentage >= 60 %}ua-warning{% else %}ua-danger{% endif %}">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  Overall Attendance: <strong>{{ percentage|floatformat:1 }}%</strong>
+  {% if percentage < 75 %} — Warning: Below 75% minimum requirement{% endif %}
+</div>
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Date</th><th>Status</th><th>Marked By</th><th>Remarks</th></tr></thead>
+      <tbody>
+      {% for rec in records %}
+      <tr>
+        <td>{{ rec.date|date:"D, M d Y" }}</td>
+        <td>
+          {% if rec.status == 'P' %}<span class="ubadge ub-green">Present</span>
+          {% elif rec.status == 'A' %}<span class="ubadge ub-red">Absent</span>
+          {% elif rec.status == 'L' %}<span class="ubadge ub-orange">Late</span>
+          {% else %}<span class="ubadge ub-purple">Excused</span>{% endif %}
+        </td>
+        <td>{{ rec.marked_by.get_full_name|default:"—" }}</td>
+        <td style="color:var(--muted);">{{ rec.remarks|default:"—" }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="4" style="padding:32px;text-align:center;color:var(--muted);">No attendance records for this course.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

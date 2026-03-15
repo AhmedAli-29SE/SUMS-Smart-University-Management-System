@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{{ department.name }}{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ department.name }}</h1><p>Code: {{ department.code }}</p></div>
+  <div style="display:flex;gap:8px;">
+    {% if user.is_admin %}<a href="{% url 'academics:department_update' department.pk %}" class="ubtn ubtn-outline">Edit</a>{% endif %}
+    <a href="{% url 'academics:department_list' %}" class="ubtn ubtn-outline">← Back</a>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <div class="u-card">
+    <div class="u-card-head"><h5>👨‍🏫 Teachers ({{ teachers|length }})</h5></div>
+    <table class="u-tbl">
+      <thead><tr><th>Name</th><th>Designation</th></tr></thead>
+      <tbody>
+      {% for t in teachers %}<tr><td class="td-bold">{{ t.user.get_full_name }}</td><td><span class="ubadge ub-blue">{{ t.get_designation_display }}</span></td></tr>
+      {% empty %}<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">No teachers in this department.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="u-card">
+    <div class="u-card-head"><h5>📚 Courses ({{ courses|length }})</h5></div>
+    <table class="u-tbl">
+      <thead><tr><th>Course</th><th>Credits</th></tr></thead>
+      <tbody>
+      {% for c in courses %}<tr><td><div class="td-bold">{{ c.name }}</div><div style="font-size:.75rem;color:var(--muted);">{{ c.code }}</div></td><td><span class="ubadge ub-gold">{{ c.credit_hours }} cr</span></td></tr>
+      {% empty %}<tr><td colspan="2" style="padding:24px;text-align:center;color:var(--muted);">No courses yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

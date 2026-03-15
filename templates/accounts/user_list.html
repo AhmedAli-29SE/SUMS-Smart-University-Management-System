@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>User Management</h1><p>Manage all university accounts</p></div>
+  <a href="{% url 'accounts:user_create' %}" class="ubtn ubtn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add User</a>
+</div>
+<div class="u-card">
+  <div class="u-card-head">
+    <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;flex:1;">
+      <input type="text" name="search" value="{{ search }}" placeholder="Search by name or email..." class="u-input" style="max-width:240px;">
+      <select name="role" class="u-input" style="max-width:160px;">
+        <option value="">All Roles</option>
+        {% for val,label in roles %}<option value="{{ val }}" {% if selected_role == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="ubtn ubtn-primary ubtn-sm">Filter</button>
+      {% if search or selected_role %}<a href="{% url 'accounts:user_list' %}" class="ubtn ubtn-outline ubtn-sm">Clear</a>{% endif %}
+    </form>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+      <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="td-bold">{{ u.get_full_name }}</td>
+        <td style="color:var(--muted);">{{ u.email }}</td>
+        <td>{% if u.is_admin %}<span class="ubadge ub-red">Admin</span>{% elif u.is_teacher %}<span class="ubadge ub-blue">Teacher</span>{% else %}<span class="ubadge ub-green">Student</span>{% endif %}</td>
+        <td>{% if u.is_active %}<span class="ubadge ub-green">Active</span>{% else %}<span class="ubadge ub-gray">Inactive</span>{% endif %}</td>
+        <td style="color:var(--muted);font-size:.82rem;">{{ u.created_at|date:"M d, Y" }}</td>
+        <td><a href="{% url 'accounts:user_detail' u.pk %}" class="ubtn ubtn-outline ubtn-xs">View →</a></td>
+      </tr>
+      {% empty %}<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted);">No users found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if is_paginated %}
+  <div style="padding:14px 18px;border-top:1px solid var(--border);display:flex;justify-content:center;gap:6px;">
+    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&search={{ search }}&role={{ selected_role }}" class="ubtn ubtn-outline ubtn-sm">← Prev</a>{% endif %}
+    <span style="padding:6px 14px;font-size:.85rem;color:var(--muted);">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&search={{ search }}&role={{ selected_role }}" class="ubtn ubtn-outline ubtn-sm">Next →</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

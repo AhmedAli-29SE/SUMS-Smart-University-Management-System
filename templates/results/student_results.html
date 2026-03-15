@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}My Results{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>My Results</h1><p>Academic performance overview</p></div>
+  <a href="{% url 'results:transcript' %}" class="ubtn ubtn-outline">📄 View Transcript</a>
+</div>
+{% if cgpa %}
+<div class="stat-grid sg-2" style="max-width:400px;margin-bottom:24px;">
+  <div class="scard"><div class="scard-icon" style="background:var(--gold-light);">⭐</div><div><div class="scard-num">{{ cgpa }}</div><div class="scard-lbl">Cumulative GPA</div></div></div>
+  <div class="scard"><div class="scard-icon" style="background:#eff6ff;">📚</div><div><div class="scard-num">{{ semesters|length }}</div><div class="scard-lbl">Semesters</div></div></div>
+</div>
+{% endif %}
+{% for sem in semesters %}
+<div class="u-card" style="margin-bottom:16px;">
+  <div class="u-card-head">
+    <h5>Semester {{ sem.semester }} — {{ sem.year }}</h5>
+    {% if sem.gpa %}<span class="ubadge ub-gold">GPA: {{ sem.gpa }}</span>{% endif %}
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Course</th><th>Credits</th><th>Midterm</th><th>Final</th><th>Total</th><th>Grade</th><th>GPA Pts</th></tr></thead>
+      <tbody>
+      {% for r in sem.results %}
+      <tr>
+        <td class="td-bold">{{ r.enrollment.course_assignment.course.name }}<div style="font-size:.73rem;color:var(--muted);">{{ r.enrollment.course_assignment.course.code }}</div></td>
+        <td>{{ r.enrollment.course_assignment.course.credit_hours }}</td>
+        <td>{{ r.midterm_marks|default:"—" }}</td>
+        <td>{{ r.final_marks|default:"—" }}</td>
+        <td><strong>{{ r.total|default:"—" }}</strong></td>
+        <td>{% if r.grade %}<span class="ubadge {% if r.grade == 'A+' or r.grade == 'A' %}ub-green{% elif r.grade == 'F' %}ub-red{% else %}ub-blue{% endif %}">{{ r.grade }}</span>{% else %}<span style="color:var(--muted);">—</span>{% endif %}</td>
+        <td>{{ r.gpa_points|default:"—" }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% empty %}
+<div class="u-card"><div class="u-card-body" style="padding:48px;text-align:center;"><div style="font-size:3rem;margin-bottom:12px;">📊</div><div style="font-weight:600;margin-bottom:6px;">No results yet</div><div style="color:var(--muted);">Your results will appear here once your teachers enter marks.</div></div></div>
+{% endfor %}
+{% endblock %}

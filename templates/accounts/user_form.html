@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} User{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ action }} User</h1><p>{% if action == 'Create' %}Add a new university account{% else %}Update account information{% endif %}</p></div>
+  <a href="{% url 'accounts:user_list' %}" class="ubtn ubtn-outline">← Back to Users</a>
+</div>
+<form method="post" enctype="multipart/form-data" novalidate>{% csrf_token %}
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start;">
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <div class="u-card">
+      <div class="u-card-head"><h5>Account Information</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          {% for field in user_form %}
+          <div class="u-fg" {% if field.name == 'email' %}style="grid-column:1/-1;"{% endif %}>
+            <label class="u-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if student_form %}
+    <div class="u-card" id="studentSection">
+      <div class="u-card-head"><h5>🎓 Student Profile</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          {% for field in student_form %}
+          <div class="u-fg" {% if field.name == 'address' %}style="grid-column:1/-1;"{% endif %}>
+            <label class="u-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if teacher_form %}
+    <div class="u-card" id="teacherSection">
+      <div class="u-card-head"><h5>👨‍🏫 Teacher Profile</h5></div>
+      <div class="u-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          {% for field in teacher_form %}
+          <div class="u-fg">
+            <label class="u-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div style="color:#dc2626;font-size:.75rem;margin-top:4px;">{{ field.errors.0 }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="u-card" style="position:sticky;top:calc(var(--navbar-h) + 16px);">
+    <div class="u-card-head"><h5>Actions</h5></div>
+    <div class="u-card-body" style="display:grid;gap:10px;">
+      <button type="submit" class="ubtn ubtn-primary" style="justify-content:center;">{{ action }} User</button>
+      <a href="{% url 'accounts:user_list' %}" class="ubtn ubtn-outline" style="justify-content:center;">Cancel</a>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}

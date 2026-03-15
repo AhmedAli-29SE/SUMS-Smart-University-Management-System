@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}All Enrollments{% endblock %}
+{% block content %}
+<div class="page-hdr"><h1>All Enrollments</h1><p>Overview of all student course enrollments</p></div>
+<div class="u-card">
+  <div style="overflow-x:auto;">
+    <table class="u-tbl">
+      <thead><tr><th>Student</th><th>Course</th><th>Teacher</th><th>Enrolled</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for enr in enrollments %}
+      <tr>
+        <td class="td-bold">{{ enr.student.user.get_full_name }}<div style="font-size:.75rem;color:var(--muted);">{{ enr.student.registration_number }}</div></td>
+        <td>{{ enr.course_assignment.course.name }}<div style="font-size:.75rem;color:var(--muted);">{{ enr.course_assignment.course.code }}</div></td>
+        <td>{{ enr.course_assignment.teacher.user.get_full_name }}</td>
+        <td style="color:var(--muted);font-size:.82rem;">{{ enr.enrolled_at|date:"M d, Y" }}</td>
+        <td>{% if enr.is_active %}<span class="ubadge ub-green">Active</span>{% else %}<span class="ubadge ub-gray">Dropped</span>{% endif %}</td>
+      </tr>
+      {% empty %}<tr><td colspan="5" style="padding:32px;text-align:center;color:var(--muted);">No enrollments found.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

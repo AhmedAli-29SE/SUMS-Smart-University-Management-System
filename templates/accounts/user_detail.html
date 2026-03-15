@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}{{ target_user.get_full_name }}{% endblock %}
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr"><h1>{{ target_user.get_full_name }}</h1><p>User account details</p></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <a href="{% url 'accounts:user_update' target_user.pk %}" class="ubtn ubtn-primary">Edit User</a>
+    <form method="post" action="{% url 'accounts:user_toggle' target_user.pk %}" style="margin:0;">{% csrf_token %}
+      <button type="submit" class="ubtn {% if target_user.is_active %}ubtn-danger{% else %}ubtn-outline{% endif %}">
+        {% if target_user.is_active %}Deactivate{% else %}Activate{% endif %}
+      </button>
+    </form>
+    <a href="{% url 'accounts:user_list' %}" class="ubtn ubtn-outline">← Back to Users</a>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;align-items:start;">
+  <div class="u-card">
+    <div class="u-card-body" style="text-align:center;padding:32px 20px;">
+      <div style="width:76px;height:76px;border-radius:16px;background:linear-gradient(135deg,var(--navy),var(--navy3));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.7rem;font-weight:800;color:#fff;font-family:'Playfair Display',serif;">{{ target_user.first_name|first }}{{ target_user.last_name|first }}</div>
+      <div style="font-weight:700;font-size:1.1rem;margin-bottom:4px;">{{ target_user.get_full_name }}</div>
+      <div style="color:var(--muted);font-size:.83rem;margin-bottom:12px;">{{ target_user.email }}</div>
+      {% if target_user.is_admin %}<span class="ubadge ub-red">Administrator</span>{% elif target_user.is_teacher %}<span class="ubadge ub-blue">Teacher</span>{% else %}<span class="ubadge ub-green">Student</span>{% endif %}
+      <div style="margin-top:8px;">{% if target_user.is_active %}<span class="ubadge ub-green">Active</span>{% else %}<span class="ubadge ub-gray">Inactive</span>{% endif %}</div>
+      <div style="margin-top:16px;color:var(--muted);font-size:.78rem;">Joined {{ target_user.created_at|date:"M d, Y" }}</div>
+    </div>
+  </div>
+  <div class="u-card">
+    <div class="u-card-head"><h5>Profile Details</h5></div>
+    <div class="u-card-body">
+      {% if profile %}
+      {% if target_user.is_student %}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><div class="u-label">Registration No.</div><div style="font-weight:600;">{{ profile.registration_number }}</div></div>
+        <div><div class="u-label">Department</div><div style="font-weight:600;">{{ profile.department.name|default:"—" }}</div></div>
+        <div><div class="u-label">Semester</div><div style="font-weight:600;">{{ profile.semester }}</div></div>
+        <div><div class="u-label">Session</div><div style="font-weight:600;">{{ profile.session }}</div></div>
+        {% if profile.phone %}<div><div class="u-label">Phone</div><div style="font-weight:600;">{{ profile.phone }}</div></div>{% endif %}
+        {% if profile.date_of_birth %}<div><div class="u-label">Date of Birth</div><div style="font-weight:600;">{{ profile.date_of_birth|date:"M d, Y" }}</div></div>{% endif %}
+      </div>
+      {% elif target_user.is_teacher %}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><div class="u-label">Employee ID</div><div style="font-weight:600;">{{ profile.employee_id }}</div></div>
+        <div><div class="u-label">Designation</div><div style="font-weight:600;">{{ profile.get_designation_display }}</div></div>
+        <div><div class="u-label">Department</div><div style="font-weight:600;">{{ profile.department.name|default:"—" }}</div></div>
+        {% if profile.qualification %}<div><div class="u-label">Qualification</div><div style="font-weight:600;">{{ profile.qualification }}</div></div>{% endif %}
+        {% if profile.phone %}<div><div class="u-label">Phone</div><div style="font-weight:600;">{{ profile.phone }}</div></div>{% endif %}
+        {% if profile.joining_date %}<div><div class="u-label">Joining Date</div><div style="font-weight:600;">{{ profile.joining_date|date:"M d, Y" }}</div></div>{% endif %}
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="u-alert ua-warning"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>No extended profile found for this user.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

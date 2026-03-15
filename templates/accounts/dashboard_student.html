@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}Student Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+  .att-pct-good { color: var(--success); font-weight: 800; }
+  .att-pct-warn { color: var(--gold); font-weight: 800; }
+  .att-pct-bad  { color: var(--danger); font-weight: 800; }
+
+  .s-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    background: #fff;
+  }
+  .s-link:hover {
+    background: #f8fafc;
+    border-color: var(--gold) !important;
+    color: var(--gold-dark);
+    transform: translateX(4px);
+  }
+  .s-link svg { flex-shrink: 0; color: var(--gold); opacity: 0.85; }
+
+  .gold-scard { background: linear-gradient(135deg, white 0%, rgba(212,175,55,0.06) 100%); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ph-row">
+  <div class="page-hdr">
+    <h1>Student Portal</h1>
+    <p>Welcome back, {{ user.first_name }} — your academic progress and course overview</p>
+  </div>
+  <div style="display:flex;gap:12px;">
+    <a href="{% url 'enrollment:enroll' %}" class="ubtn ubtn-primary" style="background:var(--gold);border-color:var(--gold);color:white;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Course Registration
+    </a>
+  </div>
+</div>
+
+{% if not profile %}
+<div class="u-alert ua-warning" style="margin-bottom:24px;border-radius:12px;background:rgba(245,158,11,0.08);">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <strong>Profile Incomplete:</strong> Your official student profile hasn't been set up yet. Please contact an administrator.
+</div>
+{% else %}
+
+<div class="stat-grid sg-4">
+  <div class="scard">
+    <div class="scard-icon" style="background:rgba(99,102,241,0.1);color:var(--accent);">📚</div>
+    <div>
+      <div class="scard-num">{{ enrollments.count }}</div>
+      <div class="scard-lbl">Active Enrollments</div>
+    </div>
+  </div>
+  <div class="scard gold-scard">
+    <div class="scard-icon" style="background:rgba(212,175,55,0.12);color:var(--gold);">⭐</div>
+    <div>
+      <div class="scard-num" style="color:var(--gold-dark);">{{ cgpa|default:"N/A" }}</div>
+      <div class="scard-lbl">Cumulative GPA</div>
+    </div>
+  </div>
+  <div class="scard">
+    <div class="scard-icon" style="background:rgba(16,185,129,0.1);color:var(--success);">📅</div>
+    <div>
+      <div class="scard-num">{{ profile.semester }}</div>
+      <div class="scard-lbl">Current Semester</div>
+    </div>
+  </div>
+  <div class="scard">
+    <div class="scard-icon" style="background:rgba(59,130,246,0.1);color:var(--info);">🆔</div>
+    <div>
+      <div class="scard-num" style="font-size:1rem;">{{ profile.registration_number }}</div>
+      <div class="scard-lbl">Student ID</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:24px;">
+  <div>
+    <div class="u-card">
+      <div class="u-card-head">
+        <h5 style="display:flex;align-items:center;gap:8px;margin:0;font-weight:700;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Current Academic Load
+        </h5>
+        <a href="{% url 'enrollment:my_enrollments' %}" class="ubtn ubtn-outline ubtn-sm">Full History</a>
+      </div>
+      {% if enrollments %}
+      <div style="overflow-x:auto;">
+        <table class="u-tbl">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Instructor</th>
+              <th>Credits</th>
+              <th style="min-width:140px;">Attendance</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for enr in enrollments|slice:":6" %}
+          <tr>
+            <td>
+              <div style="display:flex;flex-direction:column;">
+                <span class="td-bold">{{ enr.course_assignment.course.name }}</span>
+                <span style="color:var(--text-muted);font-size:0.75rem;">{{ enr.course_assignment.course.code }}</span>
+              </div>
+            </td>
+            <td>{{ enr.course_assignment.teacher.user.get_full_name }}</td>
+            <td>
+              <span class="ubadge" style="background:rgba(59,130,246,0.1);color:var(--info);border-radius:4px;padding:2px 8px;">
+                {{ enr.course_assignment.course.credit_hours }} CU
+              </span>
+            </td>
+            <td>
+              {% with pct=enr.get_attendance_percentage %}
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="u-prog" style="flex:1;height:8px;">
+                  <div class="u-prog-bar {% if pct >= 75 %}upb-good{% elif pct >= 65 %}upb-warn{% else %}upb-bad{% endif %}" style="width:{{ pct }}%;"></div>
+                </div>
+                <span style="font-size:0.8rem;font-weight:700;color:var(--text);min-width:36px;text-align:right;">{{ pct|floatformat:0 }}%</span>
+              </div>
+              {% endwith %}
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div style="padding:64px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:16px;opacity:0.4;">📖</div>
+        <div style="font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:8px;">No Courses Yet</div>
+        <p style="color:var(--text-muted);max-width:380px;margin:0 auto 20px;">Get started by enrolling in courses for this academic session.</p>
+        <a href="{% url 'enrollment:enroll' %}" class="ubtn ubtn-primary" style="background:var(--gold);border-color:var(--gold);color:white;">
+          Enroll in a Course →
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:20px;">
+    <div class="u-card">
+      <div class="u-card-head">
+        <h5 style="margin:0;font-weight:700;">⚡ Quick Access</h5>
+      </div>
+      <div style="padding:1rem;display:grid;gap:8px;">
+        <a href="{% url 'attendance:my_attendance' %}" class="s-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Attendance Record
+        </a>
+        <a href="{% url 'results:my_results' %}" class="s-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          Grades & Results
+        </a>
+        <a href="{% url 'results:transcript' %}" class="s-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Official Transcript
+        </a>
+        <a href="{% url 'accounts:profile' %}" class="s-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          My Profile
+        </a>
+      </div>
+    </div>
+
+    {% if attendance_summary %}
+    <div class="u-card">
+      <div class="u-card-head">
+        <h5 style="margin:0;font-weight:700;">📊 Attendance Overview</h5>
+      </div>
+      <div style="padding:1rem;">
+        {% for item in attendance_summary|slice:":4" %}
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:0.82rem;font-weight:600;color:var(--text2);">{{ item.course.name|truncatechars:18 }}</span>
+            <span class="{% if item.percentage >= 75 %}att-pct-good{% elif item.percentage >= 65 %}att-pct-warn{% else %}att-pct-bad{% endif %}" style="font-size:0.82rem;">{{ item.percentage|floatformat:0 }}%</span>
+          </div>
+          <div class="u-prog" style="height:5px;">
+            <div class="u-prog-bar {% if item.percentage >= 75 %}upb-good{% elif item.percentage >= 65 %}upb-warn{% else %}upb-bad{% endif %}" style="width:{{ item.percentage }}%;"></div>
+          </div>
+        </div>
+        {% empty %}
+        <p style="color:var(--text-muted);font-size:0.875rem;margin:0;text-align:center;">No data yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}
